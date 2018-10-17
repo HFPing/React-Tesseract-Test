@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Tesseract } from 'tesseract.ts';
 import logo from './logo.svg';
 import './App.css';
 
@@ -9,10 +10,12 @@ class App extends Component {
   }
 
   fileSelectedHandler = (event) => {
-    console.log(event.target.files[0]);
     if (event.target.files && event.target.files[0]) {
       let reader = new FileReader();
       reader.onload = (e) => {
+        Tesseract.recognize(e.target.result)
+        .then(res => console.log('Result: ', res.text))
+        .catch(e => console.log(e));
         this.setState({ image: e.target.result });
       };
       reader.readAsDataURL(event.target.files[0]);
@@ -23,7 +26,7 @@ class App extends Component {
     return (
       <div className="App">
         <input type="file" onChange={this.fileSelectedHandler}/>
-        <img alt={'Alt text'} src={this.state.image}/>
+        <img  alt={"Alt text"} src={this.state.image}/>
       </div>
     );
   }
